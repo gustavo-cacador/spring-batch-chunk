@@ -5,11 +5,11 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -22,10 +22,14 @@ public class FetchUserDataAndStoreDBStepConfig {
     private int chunkSize;
 
     @Bean
-    public Step fetchUserDataAndStoreDBStep(ItemReader<UserDTO> fetchUserDataReader, JobRepository jobRepository, DataSourceTransactionManager transactionManager) {
+    public Step fetchUserDataAndStoreDBStep(ItemReader<UserDTO> fetchUserDataReader,
+                                            ItemWriter<UserDTO> insertUserDataDBWriter,
+                                            JobRepository jobRepository) {
         return new StepBuilder("fetchUserDataAndStoreDBStep", jobRepository)
-                .<UserDTO, UserDTO>chunk(chunkSize, transactionManager)
+                .<UserDTO, UserDTO>chunk(chunkSize)
                 .reader(fetchUserDataReader)
+                .writer(insertUserDataDBWriter)
+                .transactionManager(transactionManager)
                 .build();
     }
 }
