@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class SelectFieldsUserDataProcessorConfig {
 
     private static Logger logger = LoggerFactory.getLogger(SelectFieldsUserDataProcessorConfig.class);
-    private int counter;
+    private int counter = 1;
 
     @Bean
     public ItemProcessor<UserDTO, User> selectFieldsUserDataProcessor() {

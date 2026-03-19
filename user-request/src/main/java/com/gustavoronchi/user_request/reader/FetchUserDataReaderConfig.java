@@ -2,13 +2,11 @@ package com.gustavoronchi.user_request.reader;
 
 import com.gustavoronchi.user_request.domain.ResponseUser;
 import com.gustavoronchi.user_request.dto.UserDTO;
-import org.apache.catalina.User;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.annotation.AfterChunk;
 import org.springframework.batch.core.annotation.BeforeChunk;
-import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.infrastructure.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -79,14 +77,14 @@ public class FetchUserDataReaderConfig implements ItemReader<UserDTO> {
     }
 
     @BeforeChunk
-    public void beforeChunk(ChunkContext context) {
+    public void beforeChunk() {
         for (int i = 0; i < chunkSize; i += pageSize) {
             users.addAll(fetchUserDataFromAPI());
         }
     }
 
     @AfterChunk
-    public void afterChunk(ChunkContext context) {
+    public void afterChunk() {
         logger.info("Final chunk");
         incrementPage();
         userIndex = 0;
