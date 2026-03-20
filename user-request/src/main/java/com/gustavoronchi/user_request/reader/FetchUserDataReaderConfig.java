@@ -36,14 +36,16 @@ public class FetchUserDataReaderConfig implements ItemReader<UserDTO> {
     private int pageSize;
 
     @Override
-    public @Nullable UserDTO read() throws Exception {
-        UserDTO user;
-        if (userIndex < users.size())
-            user = users.get(userIndex);
-        else
-            user = null;
-        userIndex++;
-        return user;
+    public UserDTO read() {
+        if (users.isEmpty()) {
+            users = fetchUserDataFromAPI();
+        }
+
+        if (userIndex < users.size()) {
+            return users.get(userIndex++);
+        }
+
+        return null;
     }
 
     private List<UserDTO> fetchUserDataFromAPI() {
